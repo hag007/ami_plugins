@@ -62,13 +62,13 @@ def check_group_enrichment(tested_gene_file_name, total_gene_file_name, go_folde
         assoc = read_ncbi_gene2go(os.path.join(go_folder, constants.GO_ASSOCIATION_FILE_NAME), no_top=True)
 
     g = GOEnrichmentStudy([int(cur) for cur in ensembl2entrez_convertor(total_gene_list)],
-                          assoc, obo_dag, log=None) # "bonferroni", "fdr_bh"
+                          assoc, obo_dag, log=None, methods=['fdr_bh']) # "bonferroni", "fdr_bh"
     g_res = g.run_study([int(cur) for cur in ensembl2entrez_convertor(tested_gene_list)])
 
-    GO_results = [(cur.NS, cur.GO, cur.goterm.name, cur.pop_count, cur.p_uncorrected) for cur in g_res ] # , cur.p_fdr_bh    if cur.p_fdr_bh <= th
+    GO_results = [(cur.NS, cur.GO, cur.goterm.name, cur.pop_count, cur.p_uncorrected, cur.p_fdr_bh) for cur in g_res ] # , cur.p_fdr_bh    if cur.p_fdr_bh <= th
 
 
-    hg_report = [{HG_GO_ROOT : cur[0], HG_GO_ID : cur[1], HG_GO_NAME : cur[2], HG_VALUE : cur[3], HG_PVAL : cur[4]} for cur in GO_results] # , HG_QVAL : cur[5]
+    hg_report = [{HG_GO_ROOT : cur[0], HG_GO_ID : cur[1], HG_GO_NAME : cur[2], HG_VALUE : cur[3], HG_PVAL : cur[4], HG_QVAL : cur[5]} for cur in GO_results] # , HG_QVAL : cur[5]
     hg_report.sort(key=lambda x: x[HG_PVAL]) # HG_QVAL
 
     return hg_report

@@ -28,7 +28,8 @@ setup(
         'goatools==0.9.9'],
     entry_points = {
         "console_scripts": [
-            "go_enrichment=src.runner:main"
+            "go_enrichment=src.runner:main_go_enrichment",
+            "visualize_module=src.runner:main_visualize_module"
         ]
     }
 
