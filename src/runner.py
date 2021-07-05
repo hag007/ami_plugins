@@ -18,10 +18,14 @@ def main():
     background_genes = args.background_genes
     output_folder = args.output_folder
     qval_th = float(args.qval_th)
-    results=check_group_enrichment(tested_genes, background_genes, os.path.join(constants.dir_path,"data"), th=qval_th)
-    df_results=pd.DataFrame(data=results)
-    output_filename=os.path.join(output_folder,os.path.splitext(os.path.basename(tested_genes))[0])+".tsv"
-    df_results.to_csv(output_filename, sep='\t', index=False)
-    print(f'written GO enrichment results to {output_filename}')
-    return(results)
+    lns=open(tested_genes, 'r').readlines()
+    for i, l in enumerate(lns):
+        cur_module=l.strip()[1:-1].split(", ")
+        print(len(l))
+        results=check_group_enrichment(cur_module, background_genes, os.path.join(constants.dir_path,"data"), th=qval_th)
+        df_results=pd.DataFrame(data=results)
+        output_filename=f'{os.path.join(output_folder,os.path.splitext(os.path.basename(tested_genes))[0])}_{i}.tsv'
+        df_results.to_csv(output_filename, sep='\t', index=False)
+        print(f'written GO enrichment results to {output_filename}')
+#         return(results)
 
