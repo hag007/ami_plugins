@@ -11,4 +11,5 @@
 !/examples/huri.sif
 !/examples/string.sif
 !/examples/tnfa_active_genes_file.txt
+/ami_plugins-env
 *.swp
