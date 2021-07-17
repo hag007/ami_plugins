@@ -4,6 +4,19 @@ from src.go import check_group_enrichment
 import src.constants as constants
 from  src.static_html import visualize_module
 import pandas as pd
+from multiprocessing import Pool
+
+def calc_enrichment(args):
+        i,l,background_genes,output_folder,qval_th=args
+        cur_module=l.strip()[1:-1].split(", ")
+        results=check_group_enrichment(cur_module, background_genes, os.path.join(constants.dir_path,"data"), th=qval_th)
+        df_results=pd.DataFrame(data=results)
+        output_go_filename=f'{os.path.join(output_folder,"module_go")}_{i}.tsv'
+        output_module_filename=f'{os.path.join(output_folder,"module_genes")}_{i}.txt'
+        df_results.to_csv(output_go_filename, sep='\t',index_label="index")
+        open(output_module_filename,'w+').write("\n".join(cur_module))
+        print(f'written GO enrichment results to {output_go_filename} and {output_module_filename}')
+
 
 def main_go_enrichment():
 
@@ -20,17 +33,11 @@ def main_go_enrichment():
     output_folder = args.output_folder
     qval_th = float(args.qval_th)
     lns=open(tested_genes, 'r').readlines()
-    for i, l in enumerate(lns):
-        cur_module=l.strip()[1:-1].split(", ")
-        results=check_group_enrichment(cur_module, background_genes, os.path.join(constants.dir_path,"data"), th=qval_th)
-        df_results=pd.DataFrame(data=results)
-        output_go_filename=f'{os.path.join(output_folder,"module_go")}_{i}.tsv'
-        output_module_filename=f'{os.path.join(output_folder,"module_genes")}_{i}.txt'
-        df_results.to_csv(output_go_filename, sep='\t',index_label="index")
-        open(output_module_filename,'w+').write("\n".join(cur_module))
-        print(f'written GO enrichment results to {output_go_filename} and {output_module_filename}')
-
-
+    params=[[i,l,background_genes,output_folder,qval_th] for i, l in enumerate(lns)]
+    p=Pool(10)
+    p.map(calc_enrichment, params)
+    p.close()
+ 
 def main_visualize_module():
 
     parser = argparse.ArgumentParser(description='args')
