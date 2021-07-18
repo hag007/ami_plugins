@@ -57,7 +57,7 @@
     table += "<th scope='col'>" + properties[j] + "</th>"
   }}
   table += "</tr> </thead> <tbody>"
-  for (let i = 1; i < ctable.length; i++) {{
+  for (let i = 0; i < ctable.length; i++) {{
     table += "<tr>"
     for (let j = 0; j < properties.length; j++) {{
       table += "<td>" + ctable[i][properties[j]] + "</td>"
