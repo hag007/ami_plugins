@@ -3,7 +3,7 @@
 
 <head>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
   <meta charset="utf-8">
   <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -12,7 +12,7 @@
       manifest.json provides metadata used when your web app is added to the
       homescreen on Android. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
-  <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
   <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -22,47 +22,55 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-  <title>React App</title>
+    <title>React App</title>
 
 
-  <!-- JQuery -->
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    <!-- JQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
     crossorigin="anonymous"></script>
 
-  <!-- cytoscape.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.2.17/cytoscape.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/cytoscape-euler@1.2.1/cytoscape-euler.min.js"></script>
+    <!-- cytoscape.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.2.17/cytoscape.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cytoscape-euler@1.2.1/cytoscape-euler.min.js"></script>
 
-<script>
+    <script>
 
-let showActiveGenes = () => {{
-  window.cy.nodes().map(cur => cur.data("label", cur.data("gene_symbol")))
-}}
+      let showGeneSymbols = () => {{
+        window.cy.nodes().map(cur => {{ cur.data("label", cur.data("gene_symbol"));
+                                        cur.data("selected", true);
+                                        print(
+                                          cur.data("eid"),
+                                          cur.data("gene_symbol"),
+                                          !!cur.data("score") ? "yes" : "no"
+                                          );
+      }})
 
-let generateTable = () => {{
-	let ctable = {GO_REPORT};
-  if (ctable.length==0) return;
+      }}
+
+      let generateTable = () => {{
+       let ctable = {GO_REPORT};
+       if (ctable.length==0) return;
   let properties= ["index", "GO id", "GO name", "GO root", "pval", "qval"]//Object.getOwnPropertyNames(ctable[0])
   let table = "<table class='table'> <thead>"
   table += "<tr>"
   for (let j = 0; j < properties.length; j++) {{
-  table += "<th scope='col'>" + properties[j] + "</th>"
-}}
+    table += "<th scope='col'>" + properties[j] + "</th>"
+  }}
   table += "</tr> </thead> <tbody>"
   for (let i = 1; i < ctable.length; i++) {{
-  table += "<tr>"
-  for (let j = 0; j < properties.length; j++) {{
-    table += "<td>" + ctable[i][properties[j]] + "</td>"
+    table += "<tr>"
+    for (let j = 0; j < properties.length; j++) {{
+      table += "<td>" + ctable[i][properties[j]] + "</td>"
+    }}
+    table += "</tr>"
   }}
-  table += "</tr>"
-}}
   table += "</tbody></table>"
   document.getElementById("hg_report").innerHTML = table;
   document.getElementById("hg_total_number").innerHTML = "<h3>Total number of enriched groups: " + (ctable.filter(cur => cur['qval'] <= 0.05).length) + "</h3>";
 }}
-  </script>
+</script>
 
-  <script>
+<script>
 
   function rainbow(max, h, s, l) {{
     if (Array.isArray(h)) {{
@@ -98,23 +106,23 @@ let generateTable = () => {{
     return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
   }}
 
-         function bwr(max, h, s, l) {{
-        if (Array.isArray(h)) {{
-          if (h.length > 1) {{
-            return [10, 10, 10];
-          }}
-          h = h[0];
-        }}
-        if (h == undefined) {{
-          return [10, 10, 10];
-        }}
+  function bwr(max, h, s, l) {{
+    if (Array.isArray(h)) {{
+      if (h.length > 1) {{
+        return [10, 10, 10];
+      }}
+      h = h[0];
+    }}
+    if (h == undefined) {{
+      return [10, 10, 10];
+    }}
 
-        h = h / max;
-        console.log(h + " " + max);
+    h = h / max;
+    console.log(h + " " + max);
 
-        var r, g, b;
+    var r, g, b;
 
-        if (s == 0) {{
+    if (s == 0) {{
           r = g = b = l; // achromatic
         }} else {{
           if (h > 0.5) {{
@@ -136,6 +144,8 @@ let generateTable = () => {{
         let cy = cytoscape({{
           container: document.getElementById(div_id),
           elements: elements,
+          minZoom: 0.25, 
+          maxZoom: 4,
           style: [
             // the stylesheet for the graph
             {{
@@ -144,13 +154,13 @@ let generateTable = () => {{
                 label: "data(label)",
                 "background-color": function(x) {{
                   return x.data().node_color != undefined
-                    ? x.data().node_color
-                    : "#666";
+                  ? x.data().node_color
+                  : "#666";
                 }},
                 "border-color": function(x) {{
                   return x.data().line_color != undefined
-                    ? x.data().line_color
-                    : "#666";
+                  ? x.data().line_color
+                  : "#666";
                 }},
                 "border-width": "7px"
               }}
@@ -163,33 +173,34 @@ let generateTable = () => {{
                 "z-index": function(ele) {{
                   console.log(
                     ele.data()["label"] == undefined ? "bottom" : "top"
-                  );
+                    );
                   return ele.data()["label"] == undefined ? 0 : 1;
                 }}
               }}
             }}
-          ],
-          layout: {{
-            name: "euler",
-            randomize: true,
-            animate: false,
-            springCoeff: edge => 0.00008,
-            fit: true
-          }}
-        }});
+            ],
+            layout: {{
+              name: "euler",
+              randomize: true,
+              animate: false,
+              springCoeff: edge => 0.00008,
+              fit: true
+            }}
+          }});
         cy.on("select", function(event) {{
           if (event.target.isEdge()) return;
           print(
             event.target.data().eid,
             !!event.target.data().gene_symbol
-              ? event.target.data().gene_symbol
-              : "");
+            ? event.target.data().gene_symbol
+            : "", 
+            event.target.data().score ? "yes": "no");
           event.target.data(
             "label",
             !!event.target.data().gene_symbol
-              ? event.target.data().gene_symbol
-              : event.target.data().eid
-          );
+            ? event.target.data().gene_symbol
+            : event.target.data().eid
+            );
           console.log(event);
         }});
 
@@ -198,15 +209,15 @@ let generateTable = () => {{
           clear();
           event.target.data("label", "");
           selectedIds = event.cy
-            .$(":selected")
-            .jsons()
-            .map(cur => cur.data);
+          .$(":selected")
+          .jsons()
+          .map(cur => cur.data);
           for (var i = 0; i < selectedIds.length; i++) {{
             print(
               selectedIds[i].eid,
               selectedIds[i].gene_symbol,
               !!selectedIds[i].score ? "yes" : "no"
-            );
+              );
           }}
 
           console.log(event);
@@ -214,17 +225,17 @@ let generateTable = () => {{
 
         clear();
         selectedIds = cy
-          .$(":selected")
-          .jsons()
-          .filter(cur => !!!cur.data["source"]);
+        .$(":selected")
+        .jsons()
+        .filter(cur => !!!cur.data["source"]);
         for (var i = 0; i < selectedIds.length; i++) {{
           print(
             selectedIds[i].data.eid,
             !!selectedIds[i].data.gene_symbol
-              ? selectedIds[i].data.gene_symbol
-              : "",
+            ? selectedIds[i].data.gene_symbol
+            : "",
             !!selectedIds[i].data.score ? "yes" : "no"
-          );
+            );
         }}
 
         return cy;
@@ -235,55 +246,55 @@ let generateTable = () => {{
 
       function print(id, name, isActive) {{
         document.getElementById("note").innerHTML +=
-          "<tr><td>" +
-          id +
-          "</td><td>" +
-          name +
-          "</td><td>"+
-          isActive +
-          "</td><td>";
+        "<tr><td>" +
+        id +
+        "</td><td>" +
+        name +
+        "</td><td>"+
+        isActive +
+        "</td><td>";
       }}
 
       window.onload = () => {{
-      let data = {GRAPH};
-      let max_score =
-          Math.max(
-            ...data.map(cur => {{
-              return cur["data"]["score"];
-            }}).filter(cur => !!cur)
+        let data = {GRAPH};
+        let max_score =
+        Math.max(
+          ...data.map(cur => {{
+            return cur["data"]["score"];
+          }}).filter(cur => !!cur)
           ) + 1;
         let max_module =
-          Math.max(
-            ...data.map(cur => {{
-                return !!cur["data"]["modules"] ? cur["data"]["modules"] : [];
-              }})
-              .reduce((a, c) => a.concat(c), [])
+        Math.max(
+          ...data.map(cur => {{
+            return !!cur["data"]["modules"] ? cur["data"]["modules"] : [];
+          }})
+          .reduce((a, c) => a.concat(c), [])
           ) + 1;
-      data = data.map(cur => {{cur["label"] = !!cur["data"]["gene_symbol"] ? cur["data"]["gene_symbol"] : cur["data"]["eid"];
-              cur["data"]["node_color"] = bwr(
-                1,
-                cur["data"]["score"],
-                1,
-                1
-              );
-              cur["data"]["line_color"] = rainbow(
-                1,
-                cur["data"]["modules"],
-                0.75,
-                0.75
-              );
-              return cur;}})
-      let cy1 = load_network(data)
-      window.cy=cy1;
-      generateTable()
-    }};
+        data = data.map(cur => {{cur["label"] = !!cur["data"]["gene_symbol"] ? cur["data"]["gene_symbol"] : cur["data"]["eid"];
+          cur["data"]["node_color"] = bwr(
+            1,
+            cur["data"]["score"],
+            1,
+            1
+            );
+          cur["data"]["line_color"] = rainbow(
+            1,
+            cur["data"]["modules"],
+            0.75,
+            0.75
+            );
+          return cur;}})
+        let cy1 = load_network(data)
+        window.cy=cy1;
+        generateTable()
+      }};
 
-  </script>
-
-
+    </script>
 
 
-  <style>
+
+
+    <style>
     /* The Cytoscape Web container must have its dimensions set. */
     html,
     body {{
@@ -292,76 +303,68 @@ let generateTable = () => {{
       width: 100% !important;
       padding: 0;
       margin: 0;
-    }}
+      }}
 
-    #cy1, #cy2 {{
-      width: 100% !important;
-      height: 100% !important;
-    }}
+      #cy1, #cy2 {{
+        width: 100% !important;
+        height: 100% !important;
+        }}
 
-    .image-wrapper {{
-      position: absolute;
-      transform: translate(-50%, -50%);
-      opacity: 1;
-    }}
+        .image-wrapper {{
+          position: absolute;
+          transform: translate(-50%, -50%);
+          opacity: 1;
+          }}
 
-    .image-wrapper.fade-out {{
-      opacity: 0;
-      transition: opacity 1s ease-in-out;
-    }}
-  </style>
+          .image-wrapper.fade-out {{
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            }}
+          </style>
+        </head>
 
-</head>
+        <body style='overflow-x:hidden'>
+          <noscript>
+            You need to enable JavaScript to run this app.
+          </noscript>
+          <div class='container-fluid'>
+            <div class='row' style="width: 100vw">
+              <div class='col-md-12'>
+               <div id="cytoscapeweb" style="height: 85vh;width: 100vw">
+               </div>
+             </div>
+           </div>
+           <div class='row' style="height: 50vh;width: 100vw">
+             <div class='col-md-12'>
+               <div id="num_of_enriched_terms_title"></div>
 
-<body>
-  <noscript>
-    You need to enable JavaScript to run this app.
-  </noscript>
-  <div class='container m-3' >
-    <div class='row' style="width: 100vw">
-      <div class='col-md-3'>
-        <div class="row">
-          <div id="root"></div>
-        </div>
-        <div class="row m-2">
-          <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col">id</th>
-                    <th scope="col">name</th>
-                    <th scope="col">is active gene</th>
-                  </tr>
-                </thead>
-                <tbody div id="note"></tbody>
-              </table>
-	<button onclick="showActiveGenes()" class="btn btn-info"> show labels on genes</button>
-        </div>
-      </div>
-      <div class='col-md-9'>
-           <div id="cytoscapeweb" style="height: 70vh;width: 90vw">
-        </div>
-      </div>
-    </div>
-    <div class='row' style="height: 100vh;width: 100vw">
-	<div class='col-md-12'>
-		 <div><h3>Total number of genes: {NUM_OF_GENES}</h3></div>
-                 <div id="disease_title"></div>
-		 <div class='row'>
-			<div class='col-md-3'>
-                 		<div id="disease_content"></div>
-                 	</div>
-		 </div>
-		 <div id="num_of_enriched_terms_title"></div>
-		 <div class='row'>
-			<div class='col-md-3'>
-                 		<div id="num_of_enriched_terms"></div>
-                 	</div>
-		 </div>
-		 <div id="hg_total_number"></div>
-		 <div id="hg_report"></div>
-	</div>
-    </div>
-  </div>
+               <div id="num_of_enriched_terms"></div>
+               <div class='row' style='margin-bottom: 15px'>
+                 <div class='col-md-2'>
+                   <button onclick="showGeneSymbols()" class="btn btn-primary"> show labels on network</button>
+                 </div>
+               </div>
+               <div class='row'>
+                 <div class='col-md-4' style='height:600px; overflow-y: scroll'>
+                   <div><h3>Total number of genes: {NUM_OF_GENES} </h3></div>
+                   <table class="table" >
+                    <thead>
+                      <tr>
+                        <th scope="col">id</th>
+                        <th scope="col">name</th>
+                        <th scope="col">is active gene</th>
+                      </tr>
+                    </thead>
+                    <tbody div id="note"></tbody>
+                  </table>
+                </div>
+                <div class='col-md-8' style='height:600px; overflow-y: scroll; padding-left:30px; right:16px'>
+                 <div id="hg_total_number"></div>
+                 <div id="hg_report"></div>
+               </div>
+             </div>
+           </div>
+         </div>
 
   <!--
       This HTML file is a template.
@@ -373,6 +376,6 @@ let generateTable = () => {{
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-</body>
+  </body>
 
-</html>
+  </html>
