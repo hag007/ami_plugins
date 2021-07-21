@@ -267,8 +267,8 @@ def fetch_go_hierarcy(go_folder, ev_exclude):
 
     print("Loading gene-GO associations")
 
-    go2geneids = read_ncbi_gene2go(association_file_location, taxids=[9606], go2geneids=True, ev_exclude=ev_exclude)
-    geneids2go = read_ncbi_gene2go(association_file_location, taxids=[9606], ev_exclude=ev_exclude)
+    go2geneids = read_ncbi_gene2go(association_file_location, taxids=[9606], go2geneids=True, ev_exclude=ev_exclude, namespace=None)
+    geneids2go = read_ncbi_gene2go(association_file_location, taxids=[9606], ev_exclude=ev_exclude, namespace=None)
 
     ## backward compatibility to goatools python 2.7##
     # all_go_ids=set().union(*list(geneids2go.values()))
@@ -282,7 +282,7 @@ def fetch_go_hierarcy(go_folder, ev_exclude):
 #################################################################
 # Driver
 #################################################################
-def build_hierarcy(go_folder, roots=['GO:0008150'], ev_exclude=set()): #  0008150 0005575 0003674
+def build_hierarcy(go_folder, roots=['GO:0008150', 'GO:0005575', 'GO:0003674'], ev_exclude=set()): #  0008150 0005575 0003674
 
     go2geneids, geneids2go = fetch_go_hierarcy(go_folder, ev_exclude)
 

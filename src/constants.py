@@ -15,6 +15,6 @@ GO_OBO_URL = config_json["go_obo_url"]
 GO_ASSOCIATION_GENE2GEO_URL = config_json["go_association_gene2geo_url"]
 GO_FILE_NAME = config_json["go_file_name"]
 GO_ASSOCIATION_FILE_NAME = config_json["go_association_file_name"]
-ROOT_GO_ID=config_json["root_go_id"]
+GO_ROOTS=config_json["go_roots"]
 EV_EXCLUDE=set(config_json["ev_exclude"].split(','))
 ENSG_TO_GENE_SYMBOLS = "ensg2gene_symbol.txt"

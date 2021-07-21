@@ -33,10 +33,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.2.17/cytoscape.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/cytoscape-euler@1.2.1/cytoscape-euler.min.js"></script>
 
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css">
+    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js"></script>
+  
     <script>
 
       let showGeneSymbols = () => {{
-        window.cy.nodes().map(cur => {{ cur.data("label", cur.data("gene_symbol"));
+        clear()
+        window.cy.nodes().map(cur => {{ 
+                                        cur.data("label", cur.data("gene_symbol"));
                                         cur.data("selected", true);
                                         print(
                                           cur.data("eid"),
@@ -51,7 +57,7 @@
        let ctable = {GO_REPORT};
        if (ctable.length==0) return;
   let properties= ["index", "GO id", "GO name", "GO root", "pval", "qval"]//Object.getOwnPropertyNames(ctable[0])
-  let table = "<table class='table'> <thead>"
+  let table = "<table class='table table-striped table-bordered' id='goTable'> <thead>"
   table += "<tr>"
   for (let j = 0; j < properties.length; j++) {{
     table += "<th scope='col'>" + properties[j] + "</th>"
@@ -67,7 +73,11 @@
   table += "</tbody></table>"
   document.getElementById("hg_report").innerHTML = table;
   document.getElementById("hg_total_number").innerHTML = "<h3>Total number of enriched groups: " + (ctable.filter(cur => cur['qval'] <= 0.05).length) + "</h3>";
+  $('#goTable').DataTable();
+  $('#geneTable').DataTable();
+ 
 }}
+
 </script>
 
 <script>
@@ -252,7 +262,7 @@
         name +
         "</td><td>"+
         isActive +
-        "</td><td>";
+        "</td></tr>";
       }}
 
       window.onload = () => {{
@@ -286,8 +296,8 @@
           return cur;}})
         let cy1 = load_network(data)
         window.cy=cy1;
-        generateTable()
-      }};
+        generateTable();
+     }};
 
     </script>
 
@@ -345,9 +355,9 @@
                  </div>
                </div>
                <div class='row'>
-                 <div class='col-md-4' style='height:600px; overflow-y: scroll'>
+                 <div class='col-md-5' style='height:600px; overflow-y: scroll'>
                    <div><h3>Total number of genes: {NUM_OF_GENES} </h3></div>
-                   <table class="table" >
+                   <table class="table table-striped table-bordered" id="geneTable" >
                     <thead>
                       <tr>
                         <th scope="col">id</th>
@@ -358,7 +368,7 @@
                     <tbody div id="note"></tbody>
                   </table>
                 </div>
-                <div class='col-md-8' style='height:600px; overflow-y: scroll; padding-left:30px; right:16px'>
+                <div class='col-md-7' style='height:600px; overflow-y: scroll; padding-left:30px; right:16px'>
                  <div id="hg_total_number"></div>
                  <div id="hg_report"></div>
                </div>

@@ -7,8 +7,9 @@ import os
 import src.constants as constants
 
 from goatools.obo_parser import GODag
-from goatools.go_enrichment import GOEnrichmentStudy
+from goatools.goea.go_enrichment_ns import GOEnrichmentStudyNS
 from goatools.associations import read_ncbi_gene2go
+from goatools.anno.genetogo_reader import Gene2GoReader
 from src.ensembl2entrez import ensembl2entrez_convertor
 from src.ensembl_convertor import load_gene_list
 from src.download_resources import download
@@ -26,7 +27,7 @@ assoc=None
 
 def init_state(go_folder):
     global dict_result, go2geneids, geneids2go, entrez2ensembl, vertices, assoc, terms_to_genes, ids_to_names
-    dict_result, go2geneids, geneids2go, entrez2ensembl = go_hierarcies.build_hierarcy(go_folder, roots=[constants.ROOT_GO_ID], ev_exclude=constants.EV_EXCLUDE)
+    dict_result, go2geneids, geneids2go, entrez2ensembl = go_hierarcies.build_hierarcy(go_folder, roots=constants.GO_ROOTS, ev_exclude=constants.EV_EXCLUDE)
     vertices = list(dict_result.values())[0]['vertices']
     terms_to_genes = {}
     ids_to_names = None
@@ -57,13 +58,25 @@ def check_group_enrichment(tested_gene_file_name, total_gene_file_name, go_folde
             with open(os.path.join(go_folder, constants.GO_ASSOCIATION_FILE_NAME),'wb') as f_out:
                 shutil.copyfileobj(f_in, f_out)
 
-    global assoc
+    global assoc 
     if assoc is None:
-        assoc = read_ncbi_gene2go(os.path.join(go_folder, constants.GO_ASSOCIATION_FILE_NAME), no_top=True)
-
-    g = GOEnrichmentStudy([int(cur) for cur in ensembl2entrez_convertor(total_gene_list)],
+    #     assoc={}
+    #     for ns in ['MF']: 
+    #         assoc.update(read_ncbi_gene2go(os.path.join(go_folder, constants.GO_ASSOCIATION_FILE_NAME), no_top=True, namespace=ns))
+        assoc=Gene2GoReader(os.path.join(go_folder, constants.GO_ASSOCIATION_FILE_NAME)).get_ns2assc()
+        # print(assocs)
+        # for a in assocs:
+        #     print("here")
+        #     print(a)
+        #     assoc.update(a)
+        
+    g = GOEnrichmentStudyNS([int(cur) for cur in ensembl2entrez_convertor(total_gene_list)],
                           assoc, obo_dag, log=None, methods=['fdr_bh']) # "bonferroni", "fdr_bh"
     g_res = g.run_study([int(cur) for cur in ensembl2entrez_convertor(tested_gene_list)])
+#     g = GOEnrichmentStudyNS(total_gene_list,
+#                           assoc, obo_dag, log=None, methods=['fdr_bh']) # "bonferroni", "fdr_bh"
+#     g_res = g.run_study(tested_gene_list)
+
 
     GO_results = [(cur.NS, cur.GO, cur.goterm.name, cur.pop_count, cur.p_uncorrected, cur.p_fdr_bh) for cur in g_res ] # , cur.p_fdr_bh    if cur.p_fdr_bh <= th
 
