@@ -43,7 +43,7 @@
         clear()
         window.cy.nodes().map(cur => {{ 
                                         cur.data("label", cur.data("gene_symbol"));
-                                        cur.data("selected", true);
+                                        cur.select(); // data("selected", true);
                                         print(
                                           cur.data("eid"),
                                           cur.data("gene_symbol"),
@@ -72,7 +72,7 @@
   }}
   table += "</tbody></table>"
   document.getElementById("hg_report").innerHTML = table;
-  document.getElementById("hg_total_number").innerHTML = "<h3>Total number of enriched groups: " + (ctable.filter(cur => cur['qval'] <= 0.05).length) + "</h3>";
+  document.getElementById("hg_total_number").innerHTML = "<h3>Total number of enriched groups (qval<0.05): " + (ctable.filter(cur => cur['qval'] <= 0.05).length) + "</h3>";
   $('#goTable').DataTable();
   $('#geneTable').DataTable();
  

@@ -9,8 +9,8 @@ from multiprocessing import Pool
 def calc_enrichment(args):
         i,l,background_genes,output_folder,qval_th=args
         cur_module=l.strip()[1:-1].split(", ")
-        results=check_group_enrichment(cur_module, background_genes, os.path.join(constants.dir_path,"data"), th=qval_th)
-        df_results=pd.DataFrame(data=results)
+        df_results=check_group_enrichment(cur_module, background_genes, os.path.join(constants.dir_path,"data"), th=qval_th)
+        # df_results=pd.DataFrame(data=results)
         output_go_filename=f'{os.path.join(output_folder,"module_go")}_{i}.tsv'
         output_module_filename=f'{os.path.join(output_folder,"module_genes")}_{i}.txt'
         df_results.to_csv(output_go_filename, sep='\t',index_label="index")
