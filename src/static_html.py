@@ -66,7 +66,7 @@ def draw_network(module_nodes, active_genes, df_network):
 def generate_report_from_template(cy, module_index, go_report, output_folder):
     go_report.loc[:,'pval']=go_report.loc[:,'pval'].apply(lambda a: '{:0.3e}'.format(a))
     go_report.loc[:,'qval']=go_report.loc[:,'qval'].apply(lambda a: '{:0.3e}'.format(a))
-    report_file_name=format_script(os.path.join(os.path.dirname(os.path.abspath(__file__)),'../data', "graph.html"), NUM_OF_GENES=len([x for x in cy if not "source" in x["data"]]), GO_REPORT=go_report.loc[:,['index', 'GO id','GO name','GO root','pval', 'qval']].iloc[:np.min([go_report.shape[0],1000])].to_dict('records'), GRAPH=json.dumps(cy))
+    report_file_name=format_script(os.path.join(os.path.dirname(os.path.abspath(__file__)),'../data', "graph.html"), NUM_OF_GENES=len([x for x in cy if not "source" in x["data"]]), GO_REPORT=go_report.loc[:,['index', 'GO id','GO term','Ontology','pval', 'qval']].iloc[:np.min([go_report.shape[0],1000])].to_dict('records'), GRAPH=json.dumps(cy))
 
     shutil.move(report_file_name, os.path.join(output_folder, "module_{}.html".format(module_index)))
     return "module_{}.html".format(module_index)

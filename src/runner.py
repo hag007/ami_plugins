@@ -33,7 +33,7 @@ def main_go_enrichment():
     output_folder = args.output_folder
     qval_th = float(args.qval_th)
     lns=open(tested_genes, 'r').readlines()
-    params=[[i,l,background_genes,output_folder,qval_th] for i, l in enumerate(lns)]
+    params=[[i+1,l,background_genes,output_folder,qval_th] for i, l in enumerate(lns)]
     p=Pool(10)
     p.map(calc_enrichment, params)
     p.close()

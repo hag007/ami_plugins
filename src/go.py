@@ -16,9 +16,9 @@ from src.download_resources import download
 from src import go_hierarchies
 import pandas as pd 
 
-HG_GO_ROOT = "GO root"
+HG_GO_ROOT = "Ontology"
 HG_GO_ID = "GO id"
-HG_GO_NAME = "GO name"
+HG_GO_NAME = "GO term"
 HG_PVAL = "pval"
 HG_QVAL = "qval"
 HG_VALUE = "value"
@@ -85,7 +85,7 @@ def check_group_enrichment(tested_gene_file_name, total_gene_file_name, go_folde
     hg_report = [{HG_GO_ROOT : cur[0], HG_GO_ID : cur[1], HG_GO_NAME : cur[2], HG_VALUE : cur[3], HG_PVAL : cur[4], HG_QVAL : cur[5]} for cur in GO_results] # , HG_QVAL : cur[5]
     hg_report.sort(key=lambda x: x[HG_PVAL]) # HG_QVAL
 
-    return pd.DataFrame(columns=[HG_GO_ROOT, HG_GO_ID, HG_GO_NAME, HG_VALUE, HG_PVAL, HG_QVAL], data=hg_report)
+    return pd.DataFrame(columns=[HG_GO_ROOT, HG_GO_ID, HG_GO_NAME, HG_VALUE, HG_PVAL, HG_QVAL], data=hg_report, index=[a+1 for a in range(len(hg_report))])
 
 
 def get_all_genes_for_term(cur_root, term, in_subtree):

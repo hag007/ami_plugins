@@ -56,7 +56,7 @@
       let generateTable = () => {{
        let ctable = {GO_REPORT};
        if (ctable.length==0) return;
-  let properties= ["index", "GO id", "GO name", "GO root", "pval", "qval"]//Object.getOwnPropertyNames(ctable[0])
+  let properties= ["index", "GO id", "GO term", "Ontology", "pval", "qval"]//Object.getOwnPropertyNames(ctable[0])
   let table = "<table class='table table-striped table-bordered' id='goTable'> <thead>"
   table += "<tr>"
   for (let j = 0; j < properties.length; j++) {{

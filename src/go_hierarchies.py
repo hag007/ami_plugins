@@ -38,7 +38,7 @@ class WrHierGO(object):
         """Write hierarchy for all GO Terms in obo file."""
         # Print: [biological_process, molecular_function, and cellular_component]
         gos_printed = set()
-        for goid in ['GO:0008150', 'GO:0003674', 'GO:0005575']:
+        for goid in ['GO:0008150']:
             gos_printed.update(self.prt_hier_down(goid, prt))
         return gos_printed
 
@@ -282,7 +282,7 @@ def fetch_go_hierarcy(go_folder, ev_exclude):
 #################################################################
 # Driver
 #################################################################
-def build_hierarcy(go_folder, roots=['GO:0008150', 'GO:0005575', 'GO:0003674'], ev_exclude=set()): #  0008150 0005575 0003674
+def build_hierarcy(go_folder, roots=['GO:0008150'], ev_exclude=set()): #  0008150 0005575 0003674
 
     go2geneids, geneids2go = fetch_go_hierarcy(go_folder, ev_exclude)
 

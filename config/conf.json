@@ -5,9 +5,10 @@
   "filtered_go_ids_file" : "../../data/filtered_go_terms.txt",
   "go_obo_url" : "http://purl.obolibrary.org/obo/go/go-basic.obo",
   "go_association_gene2geo_url":"https://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2go.gz",
-  "go_file_name": "go.obo",
+  "go_file_name": "go_all.obo",
   "go_association_file_name": "gene2go",
-  "go_roots": ["GO:0005575","GO:0008150","GO:0003674"],
+  "go_roots": ["GO:0008150"],
+  "go_roots_all": ["GO:0005575","GO:0008150","GO:0003674"],
   "ev_exclude": ""
 
 }
